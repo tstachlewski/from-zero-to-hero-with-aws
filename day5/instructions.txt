@@ -1,0 +1,17 @@
+1. Open ECR console and create a new registry
+
+2. Open the new registry, and in the right top corner there will be button 'View Push Commands' with instructions which you will need to run in Cloud9 later.
+
+3. You will need to be in /creating-docker-image/apps/simple-php-page folder .
+
+4. Execute commands from popup from step 2.
+
+5. Validate that your image in now in container repository.
+
+6. Try to scan the image to see if there are so vulnerabilities. 
+
+7. Now deploy also different version of our app, based on python
+
+docker build -t myrepo:new-app .
+docker tag myrepo:new-app 398266723651.dkr.ecr.eu-west-1.amazonaws.com/myrepo:new-app
+docker push 398266723651.dkr.ecr.eu-west-1.amazonaws.com/myrepo:new-app

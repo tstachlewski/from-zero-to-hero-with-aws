@@ -1,0 +1,7 @@
+1. Copy SSH key with following command:
+
+scp -i KEY_NAME.pem KEY_NAME.pem ec2-user@IP_ADDRESS:KEY_NAME.pem
+
+for example:
+
+scp -i tomek-key.pem tomek-key.pem ec2-user@54.216.101.235:tomek-key.pem

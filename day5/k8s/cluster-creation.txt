@@ -1,0 +1,33 @@
+0. Verify "who" are you now
+
+aws sts get-caller-identity --query Arn
+
+1. Create new IAM Role with Admin Rights and assign it to Cloud9 env, then change configureation of Cloud9 to use it.
+
+2. Verify again "who" are you
+
+3. Install kubectl tool
+
+sudo curl --silent --location -o /usr/local/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.17.11/2020-09-18/bin/linux/amd64/kubectl
+sudo chmod +x /usr/local/bin/kubectl
+
+4. Install eksctl
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv -v /tmp/eksctl /usr/local/bin
+
+5. Verify that eksctl is installed
+
+eksctl version
+
+6. Creaste EKS Cluster
+
+eksctl create cluster --name=my-k8s-cluster --managed --nodes=2 --region=eu-west-1
+
+7. Validate that your K8S is working and you can access it
+
+kubectl get nodes
+
+8. By the default, you will see K8S cluster in console, but you won't see any details. Please follow instruction in below link to add your user to K8S configuration file.
+
+https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html

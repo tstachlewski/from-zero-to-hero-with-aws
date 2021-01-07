@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Single Linux Server Template'
+
+Parameters: 
+    SubnetId: 
+        Type: String
+        Description: Subnet in which server will be created.
+    
+Resources:
+    CloudServer:
+        Type: AWS::EC2::Instance
+        Properties: 
+            ImageId: ami-01720b5f421cf0179
+            SubnetId: !Ref SubnetId
+
+
+Outputs:
+    ServerID: 
+        Value: !Ref CloudServer

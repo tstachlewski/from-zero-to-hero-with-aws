@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+
+  endpoint = "https://8e6k69q3aa.execute-api.eu-central-1.amazonaws.com/default/ContactLogic";
+
+  $("#call_button").click(function(){
+
+    $("#player").attr("src", "");
+
+    inputText = $("#inputText").val();
+    inputImage = $("#inputImage").val();
+    inputPhoneNumber = $("#inputPhoneNumber").val();
+    inputEmail = $("#inputEmail").val();
+    data =  JSON.stringify({ "text": inputText, "image": inputImage, "phone": inputPhoneNumber, "email": inputEmail, "type": 3})
+
+    $.post(endpoint,data,
+      function(data,status){
+        $("#player").attr("src", data);
+      });
+  });
+
+  $("#sms_button").click(function(){
+
+    $("#player").attr("src", "");
+
+    inputText = $("#inputText").val();
+    inputImage = $("#inputImage").val();
+    inputPhoneNumber = $("#inputPhoneNumber").val();
+    inputEmail = $("#inputEmail").val();
+    data =  JSON.stringify({ "text": inputText, "image": inputImage, "phone": inputPhoneNumber, "email": inputEmail, "type": 2})
+
+    $.post(endpoint,data,
+      function(data,status){
+        $("#player").attr("src", data);
+      });
+  });
+
+  $("#play_button").click(function(){
+
+    $("#player").attr("src", "");
+
+    inputText = $("#inputText").val();
+    inputImage = $("#inputImage").val();
+    inputPhoneNumber = $("#inputPhoneNumber").val();
+    inputEmail = $("#inputEmail").val();
+    data =  JSON.stringify({ "text": inputText, "image": inputImage, "phone": inputPhoneNumber, "email": inputEmail, "type": 1})
+
+    $.post(endpoint,data,
+      function(data,status){
+        $("#player").attr("src", data);
+      });
+  });
+
+
+});
+</script>
+</head>
+<body>
+
+
+<br/><br/><br/><br/>
+<table>
+  <tr><td>Text:</td><td><textarea id="inputText" rows="4" cols="50"></textarea></td></tr>
+  <tr><td>Image Link:</td><td><input id="inputImage"/></td></tr>
+  <tr><td>Phone Number:</td><td><input id="inputPhoneNumber"/></td></tr>
+  <tr><td>Email:</td><td><input id="inputEmail"/></td></tr>
+
+</table>
+
+<button id="play_button">Play!</button>
+<button id="sms_button">Send SMS!</button>
+<button id="call_button">Call me!</button>
+
+</br></br>
+<audio controls id="player">
+  <source src="" type="audio/mpeg">
+</audio>
+
+</body>
+</html>

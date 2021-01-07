@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Single Linux Server Template'
+
+Resources:
+    CloudServer:
+        Type: AWS::EC2::Instance
+        Properties: 
+            ImageId: ami-01720b5f421cf0179
+            InstanceType: t3.nano
+            SecurityGroupIds: 
+                - !ImportValue "SecurityGroupWWW"
+            SubnetId: !ImportValue "PublicSubnet1"
+            UserData: !Base64 |
+                #!/bin/bash
+                sudo yum update -y
+                sudo yum install php httpd -y
+                sudo systemctl start httpd
+                sudo systemctl enable httpd
+                sudo su
+                cd /var/www/html
+                aws s3 cp --no-sign-request s3://tomash-public/examples/php/index.php .
+
+
+Outputs:
+    ServerID: 
+        Value: !Ref CloudServer

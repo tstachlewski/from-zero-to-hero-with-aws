@@ -1,0 +1,38 @@
+1. Deploy www-app.yaml file with following command. Don't forget to change the reference to YOUR docker image.
+
+kubectl apply -f www-app.yaml
+
+2. Deploy www-app-v2.yaml, which will update the previous deployment and also it will deploy new load balancer.
+
+kubectl apply -f www-app-v2.yaml
+
+3. Verify that a new LB was created (in AWS Console)
+
+4. Now, we will configure our K8S cluster, so it would be using ALB instead of Classic ELB. To do it execute following commands:
+
+eksctl utils associate-iam-oidc-provider --region eu-west-1 --cluster my-k8s-cluster --approve
+curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/install/iam_policy.json
+aws iam create-policy  --policy-name AWSLoadBalancerControllerIAMPolicy  --policy-document file://iam_policy.json
+
+eksctl create iamserviceaccount \
+  --cluster=my-k8s-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::ACCOUNT_ID:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
+  
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.2/cert-manager.yaml
+curl -o v2_1_0_full.yaml https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/install/v2_1_0_full.yaml
+
+5. Edit "--cluster-name" part in above file with you cluster name.
+
+6. Deploy it.
+
+kubectl apply -f v2_1_0_full.yaml
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+5. Deploy sample app (on Fargate) to see if it is working
+
+eksctl create fargateprofile --cluster my-k8s-cluster --region eu-west-1 --name noservers --namespace game-2048
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/examples/2048/2048_full.yaml

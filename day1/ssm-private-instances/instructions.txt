@@ -1,0 +1,4 @@
+By the default SSM won't be able to detect your private instances. There are some ways to solve it (like NAT) - but even then, there is a couple of steps which you would need to do. 
+To make it easier we will set up VPC endpoints, which will allow private communication between SSM and your private instances.
+
+1) Please follow up this: https://aws.amazon.com/premiumsupport/knowledge-center/ec2-systems-manager-vpc-endpoints/

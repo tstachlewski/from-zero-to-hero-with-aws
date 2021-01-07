@@ -1,0 +1,18 @@
+#Execute following commands to prepare new CDK project
+mkdir myapp
+cd myapp
+cdk init app --language=python
+
+#Set up virtual enviroment
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+#You will be using this command to convert python code to JSON/YMAL
+cdk synth
+
+#You will be using this install new dependencies
+pip install -r requirements.txt
+
+#You will be using this command to deploy changes
+cdk deploy --all

@@ -1,0 +1,24 @@
+1) Create a new Server, call it 'Memorium". Put it in Public Subnet.
+
+2) In SSM execute 'Quick Setup' so that it would discover 'Memorium'
+
+3) Validate that 'Memorium' has got now a IAM Role assign to it. Add 'CloudWatchAgentServerPolicy' policy to this role.
+
+4) SSH to Memorium. Confirm that CW Agent is running.
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status
+
+5) You will need to configure CW Agent, so that it would know that it should send additional metrics (like memory). To do it we will use following link: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html
+
+6) Start the CloudWatch agent configuration wizard by entering the following.
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+
+7) Configure it according to your needs.
+
+8) Restart CW Agent.
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a stop
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start
+
+9) Wait a couple of minutes and confirm that you have access to new metrics in CW

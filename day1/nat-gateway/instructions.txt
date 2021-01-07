@@ -1,0 +1,23 @@
+#In this lab, we will try to connect to private instance and run update command - which will objective is to update OS (it will download all resources from Internet)
+
+1) Copy your SSH key from your local env (Cloud9 is ok) to public instance
+
+scp  -i "workshop.pem"  workshop.pem ec2-user@YOUR_INSTANCE_IP:/home/ec2-user/workshop.pem
+
+2) SSH to your public instance. You should have there your SSH key. You can validate it using "ls" command.
+
+3) Change permissions on key:
+
+chmod 400 "workshop.pem" 
+
+4) Try to update your PUBLIC instance
+
+sudo yum update -y 
+
+5) Connect to you private instance ( scp  -i "workshop.pem" ...)
+
+6) Try to update your PRIVATE instance. It won't work.
+
+sudo yum update -y 
+
+7) Add NAT Gateway to your private subnets. Then repeate previous step.

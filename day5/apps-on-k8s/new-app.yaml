@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: new-app
+  name: new-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: new-app
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: new-app
+    spec:
+      containers:
+      - image: 398266723651.dkr.ecr.eu-west-1.amazonaws.com/myrepo:new-app2
+        name: new-app
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: new-app-service
+spec:
+  selector:
+    run: new-app
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer

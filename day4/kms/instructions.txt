@@ -1,0 +1,15 @@
+
+
+1. Copy image to S3 without any encryption
+
+aws s3 cp unicorn.png s3://test-tomek-12341234/unicorn-plain.png
+
+aws s3 cp unicorn.png s3://test-tomek-12341234/unicorn-plain-public.png --acl public-read
+
+aws s3 cp unicorn.png s3://test-tomek-12341234/unicorn-plain-public-sse.png --acl public-read --sse 
+
+aws s3 cp unicorn.png s3://test-tomek-12341234/unicorn-plain-public-sse-cmk.png --acl public-read --sse aws:kms --sse-kms-key-id arn:aws:kms:eu-west-1:398266723651:key/9a9278ca-70ee-4c46-8c00-0b258987f923
+
+aws s3 cp unicorn.png s3://test-tomek-12341234/unicorn-plain-public-sse-ownkey.png --acl public-read --sse-c --sse-c-key 12345678901234567890123456789012
+
+

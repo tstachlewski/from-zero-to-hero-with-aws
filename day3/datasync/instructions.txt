@@ -1,0 +1,8 @@
+Useful commands:
+
+aws ssm get-parameter --name /aws/service/datasync/ami --region ap-southeast-2
+
+https://console.aws.amazon.com/ec2/v2/home?region=ap-southeast-2#LaunchInstanceWizard:ami=ami-03b5f7f521e662c44
+
+cd /mnt/efs/fs1
+aws s3 cp --no-sign-request s3://cloudbuildersday/lab-bigdata . --recursive
