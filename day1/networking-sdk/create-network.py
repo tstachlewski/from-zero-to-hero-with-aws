@@ -5,7 +5,7 @@ import boto3
 client = boto3.client('ec2')
 
 #Creating VPC
-Vpc = client.create_vpc( CidrBlock='10.0.0.0/16', TagSpecifications=[ {'ResourceType': 'vpc', 'Tags': [ { 'Key': 'Name', 'Value': 'Networking2' }, ] }, ] )["Vpc"]["VpcId"]
+Vpc = client.create_vpc( CidrBlock='10.0.0.0/16', TagSpecifications=[ {'ResourceType': 'vpc', 'Tags': [ { 'Key': 'Name', 'Value': 'Workshop-Network' }, ] }, ] )["Vpc"]["VpcId"]
 client.modify_vpc_attribute( EnableDnsHostnames={ 'Value': True }, VpcId=Vpc )
 
 #Creating Subnets
