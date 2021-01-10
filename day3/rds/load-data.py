@@ -9,7 +9,7 @@ mydb = mysql.connector.connect(
 
 
 mycursor = mydb.cursor()
-mycursor.execute("USE bidata")
+mycursor.execute("USE bigdata")
 
 directory = os.fsencode("data")
     
