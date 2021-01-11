@@ -1,0 +1,28 @@
+#We will be using following solution: https://github.com/newsapps/beeswithmachineguns
+
+1. Create bees-keys in N.Virginia
+2. Create SG group "bees-sg" with 22 port open
+3. Upload bees-keys to C9
+4. Install beeswithmachineguns 
+
+sudo pip install https://github.com/newsapps/beeswithmachineguns/archive/master.zip
+
+sudo sudo pip install beeswithmachineguns
+
+5. Copy keys
+
+cp bees-keys.pem /home/ec2-user/.ssh/bees-keys.pem
+
+6. You will need to set up AWS keys on your C9 (aws configure...)
+
+5. Prepare bees
+
+bees up -s 1 -g bees-sg -k bees-keys -i ami-0c37add01a83e103e
+
+6. Attack!
+
+bees attack -n 10 -c 1 -u http://myscaling-1-931739264.eu-west-1.elb.amazonaws.com/pi.php/
+
+7. Clean up
+
+bees down
