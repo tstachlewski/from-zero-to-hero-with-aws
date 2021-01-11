@@ -16,3 +16,22 @@ pip install -r requirements.txt
 
 #You will be using this command to deploy changes
 cdk deploy --all
+
+
+
+
+
+cd ~/environment/myapp/myapp/
+touch networking_stack.py
+
+cd ~/environment/myapp/myapp/
+touch compute_stack.py
+
+cd ~/environment/myapp/myapp/
+touch database_stack.py
+
+
+
+cp ~/environment/from-zero-to-hero-with-aws/day2/iac/cdk-parts/networking_stack.py ~/environment/myapp/myapp/networking_stack.py
+cp ~/environment/from-zero-to-hero-with-aws/day2/iac/cdk-parts/compute_stack.py ~/environment/myapp/myapp/compute_stack.py
+cp ~/environment/from-zero-to-hero-with-aws/day2/iac/cdk-parts/database_stack.py ~/environment/myapp/myapp/database_stack.py
