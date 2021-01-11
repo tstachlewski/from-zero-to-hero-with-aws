@@ -1,0 +1,20 @@
+
+#Documentation: https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
+aws ec2 run-instances \
+    --image-id ami-0aef57767f5404a3c  \
+    --instance-type c5.xlarge \
+    --subnet-id REPLACE_ME \
+    --security-group-ids REPLACE_ME \
+    --key-name workshop \
+    --monitoring Enabled=true \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=DDOS-er}]"
+
+For example:
+aws ec2 run-instances \
+    --image-id ami-0aef57767f5404a3c  \
+    --instance-type c5.xlarge \
+    --subnet-id subnet-07a0629fd18592575 \
+    --security-group-ids sg-070a1eb8ba6f8a036 \
+    --key-name workshop \
+    --monitoring Enabled=true \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=DDOS-er}]"
