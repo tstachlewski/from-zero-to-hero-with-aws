@@ -12,10 +12,8 @@ class DatabaseStack(core.Stack):
         #Creating Database
         db_mysql_easy = rds.DatabaseInstance(self, "webapp-db",
                                              engine=rds.DatabaseInstanceEngine.MYSQL,
-                                             engine_version="5.7.22",
                                              instance_type=ec2.InstanceType.of(
                                                  ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.SMALL),
-                                             master_username="admin",
                                              vpc=vpc,
                                              multi_az=False,
                                              allocated_storage=100,
