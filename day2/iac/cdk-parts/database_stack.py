@@ -18,7 +18,7 @@ class DatabaseStack(core.Stack):
                                              multi_az=False,
                                              allocated_storage=100,
                                              storage_type=rds.StorageType.GP2,
-                                             cloudwatch_logs_exports=["audit", "error", "general", "slowquery"],
+                                             cloudwatch_logs_exports=[ "error", "general", "slowquery"],
                                              deletion_protection=False,
                                              delete_automated_backups=True,
                                              backup_retention=core.Duration.days(7),
