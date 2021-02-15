@@ -172,25 +172,50 @@
     },
 
     "LoadBalancer" : {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
-      "DependsOn" : ["NAT"],
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Subnets" : [ {"Ref": "SubnetPublic1"}, {"Ref" : "SubnetPublic2"}],
+        "LoadBalancerAttributes" : [
+          { "Key" : "idle_timeout.timeout_seconds", "Value" : "50" }
+        ],
+        "SecurityGroups": [{"Ref": "LoadBalancerSecurityGroup"}],
+        "Tags" : [ {"Key" : "Name", "Value" : {"Fn::Join" : ["", [{ "Ref" : "AWS::StackName" }, "-ALB"]]}} ]
+      }
+    },
+
+    "LoadBalancerListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [{
+          "Type": "forward",
+          "TargetGroupArn": { "Ref": "LoadBalancerTargetGroup" }
+        }],
+        "LoadBalancerArn": { "Ref": "LoadBalancer" },
+        "Port": "80",
+        "Protocol": "HTTP"
+      }
+    },
+
+    "LoadBalancerTargetGroup" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties" : {
-        "SecurityGroups" : [ { "Ref" : "LoadBalancerSecurityGroup" } ],
-        "Subnets" : [ { "Ref" : "SubnetPublic1" }, { "Ref" : "SubnetPublic2" }],
-        "CrossZone" : "true",
-        "Listeners" : [ {
-          "LoadBalancerPort" : "80",
-          "InstancePort" : "80",
-          "Protocol" : "HTTP"
-        } ],
-        "HealthCheck" : {
-          "Target" : "HTTP:80/",
-          "HealthyThreshold" : "2",
-          "UnhealthyThreshold" : "5",
-          "Interval" : "10",
-          "Timeout" : "5"
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 2,
+        "Matcher" : {
+          "HttpCode" : "200"
         },
-        "Tags" : [ {"Key" : "Name", "Value" : {"Fn::Join" : ["", [{ "Ref" : "AWS::StackName" }, "-ELB"]]}} ]
+        "Name": {"Fn::Join" : ["", [{ "Ref" : "AWS::StackName" }, "-TargetGroup"]]},
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": [{
+          "Key": "deregistration_delay.timeout_seconds",
+          "Value": "20"
+        }],
+        "UnhealthyThresholdCount": 3,
+        "VpcId": {"Ref" : "VPC"},
+        "Tags" : [ {"Key" : "Name", "Value" : {"Fn::Join" : ["", [{ "Ref" : "AWS::StackName" }, "-TargetGroup"]]}} ]
       }
     },
 
@@ -199,7 +224,8 @@
        "DependsOn" : "NAT",
        "Properties" : {
           "KeyName" : { "Ref" : "KeyName" },
-          "ImageId" : "ami-9398d3e0",
+          "ImageId" : "ami-08935252a36e25f85",
+          "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
           "SecurityGroups" : [ { "Ref" : "LoadBalancerSecurityGroup" } ],
           "InstanceType" : { "Ref" : "InstanceType" },
           "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
@@ -210,15 +236,20 @@
                     "chkconfig httpd on\n",
                     "cd /var/www/html\n",
                     "aws s3 cp --no-sign-request s3://tomash-public/examples/php/index.php .\n",
-                    "aws s3 cp --no-sign-request s3://tomash-public/examples/php/looper.php .\n"
-                  ]]}},
 
+                    "sudo yum install ruby \n",
+                    "sudo yum install wget \n",
+                    "cd /home/ec2-user \n",
+                    "wget https://aws-codedeploy-eu-west-1.s3.amazonaws.com/latest/install \n",
+                    "chmod +x install \n",
+                    "sudo ./install auto \n"
+                  ]]}},
           "BlockDeviceMappings" : [
              {
                "DeviceName" : "/dev/xvda",
                 "Ebs" : { "VolumeSize" : "20" }
              }
-          ]
+          ],
        }
     },
 
@@ -226,12 +257,13 @@
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "DependsOn" : "NAT",
       "Properties" : {
-        "LoadBalancerNames" : [ { "Ref" : "LoadBalancer" }],
         "LaunchConfigurationName" : { "Ref" : "AutoScalingConfiguration" },
         "MinSize" : "2",
         "MaxSize" : "5",
-        "VPCZoneIdentifier" : [ { "Ref" : "SubnetPrivate1" }, { "Ref" : "SubnetPrivate2" }]
-      }
+        "TargetGroupARNs" : [ { "Ref" : "LoadBalancerTargetGroup" }],
+        "VPCZoneIdentifier" : [ { "Ref" : "SubnetPrivate1" }, { "Ref" : "SubnetPrivate2" }],
+        "Tags" : [ {"Key" : "Name", "Value" : {"Fn::Join" : ["", [{ "Ref" : "AWS::StackName" }, "-Server"]]}, "PropagateAtLaunch" : "true"} ]
+      },
     },
 
     "EIP" : {
@@ -249,6 +281,76 @@
         "AllocationId" : { "Fn::GetAtt" : ["EIP", "AllocationId"]},
         "SubnetId" : { "Ref" : "SubnetPublic1"}
       }
+    },
+
+    "CodeDeployRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "codedeploy.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+            } ]
+          },
+          "Policies": [ {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version" : "2012-10-17",
+              "Statement": [ {
+                "Effect": "Allow",
+                "Action": "*",
+                "Resource": "*"
+                } ]
+              }
+              } ]
+            }
+          },
+
+    "EC2Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "ec2.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+            } ]
+          },
+          "Policies": [ {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version" : "2012-10-17",
+              "Statement": [ {
+                "Effect": "Allow",
+                "Action": "*",
+                "Resource": "*"
+                } ]
+              }
+              } ]
+            }
+          },
+
+          "InstanceProfile": {
+             "Type": "AWS::IAM::InstanceProfile",
+             "Properties": {
+                "Roles": [ {
+                   "Ref": "EC2Role"
+                } ]
+             }
+          }
+  },
+
+  "Outputs" : {
+      "LoadBalancerDNSName" : {
+        "Description": "The DNSName of the backup load balancer",
+        "Value" : { "Fn::GetAtt" : [ "LoadBalancer", "DNSName" ]}
+      }
     }
-  }
 }
