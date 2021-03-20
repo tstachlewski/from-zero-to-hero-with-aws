@@ -12,7 +12,7 @@ comprehend = boto3.client('comprehend')
 polly = boto3.client('polly')
 s3 = boto3.client('s3')
 
-languages = {'pl':'Maja','en':'Matthew','de':'Vicki','fr':'Celine','jp':'Mizuki'}
+languages = {'pl':'Maja','en':'Matthew','de':'Vicki','fr':'Celine','ja':'Mizuki'}
 
 
 def lambda_handler(event, context):
