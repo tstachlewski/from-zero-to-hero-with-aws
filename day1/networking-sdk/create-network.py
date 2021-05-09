@@ -1,4 +1,4 @@
-#You might need to install boto3 first. "sudo pip install boto3" / sudo pip3 install boto3
+#You might need to install boto3 first. Command: sudo pip3 install boto3
 import boto3
 
 #Creating a low-level client representing EC2 (with VPC)
