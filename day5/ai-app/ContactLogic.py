@@ -17,6 +17,7 @@ dynamodb = boto3.resource('dynamodb')
 s3 = boto3.client('s3')
 sns = boto3.client('sns')
 connect = boto3.client('connect')
+myBucketName = "tomek-test-1"
 
 def lambda_handler(event, context):
 
@@ -59,7 +60,7 @@ def lambda_handler(event, context):
 
     if type == 2:
         logger.info('Sending SMS: %s', url);
-        sns.publish( PhoneNumber=phone, Message = url );
+        sns.publish( PhoneNumber=phone, Message = url, MessageAttributes={'AWS.SNS.SMS.SenderID': {'DataType': 'String', 'StringValue': "CHMURA"}, 'AWS.SNS.SMS.SMSType': {'DataType': 'String', 'StringValue': 'Promotional'}} );
 
     if type == 3:
         callUser(language, text, phone)
@@ -90,12 +91,12 @@ def createTextFile(file_id, text):
     f = open('/tmp/' + file, "w")
     f.write(text)
     f.close()
-    s3.upload_file('/tmp/' + file, "a-test-bucket-tomek-1", file)
+    s3.upload_file('/tmp/' + file, myBucketName, file)
 
 def downloadImageToS3(file_id, image):
     file = file_id + ".jpg";
     urllib.request.urlretrieve(image, '/tmp/' + file)
-    s3.upload_file('/tmp/' + file, "a-test-bucket-tomek-1", file)
+    s3.upload_file('/tmp/' + file, myBucketName, file)
 
 
 def callUser(language, text, phone):
