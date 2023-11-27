@@ -18,3 +18,6 @@ export ROUTE_TABLE=$(aws ec2 create-route-table --vpc-id $VPC --tag-specificatio
 aws ec2 create-route --destination-cidr-block "0.0.0.0/0" --route-table-id $ROUTE_TABLE --gateway-id $IGW
 aws ec2 associate-route-table --route-table-id $ROUTE_TABLE --subnet-id $SUBNET_PUB_1
 aws ec2 associate-route-table --route-table-id $ROUTE_TABLE --subnet-id $SUBNET_PUB_2
+
+aws ec2 modify-subnet-attribute --subnet-id $SUBNET_PUB_1 --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id $SUBNET_PUB_2 --map-public-ip-on-launch
