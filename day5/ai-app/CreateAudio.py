@@ -30,7 +30,7 @@ def lambda_handler(event, context):
 
     # Reading a file
     with open("/tmp/"+file, 'r') as myfile:
-        content=myfile.read().replace('\n', '')
+        content=myfile.read().replace('\n', ' ')
 
     logger.info('Content:');
     logger.info(content);
