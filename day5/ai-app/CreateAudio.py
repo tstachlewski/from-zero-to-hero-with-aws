@@ -70,7 +70,12 @@ def lambda_handler(event, context):
     #Creating new record in DynamoDB table
     location = s3.get_bucket_location(Bucket=bucket)
     region = location['LocationConstraint']
-    url_begining = "https://s3-" + str(region) + ".amazonaws.com/"
+
+    if (region is None):
+        url_begining = "https://s3.amazonaws.com/"
+    else:
+        url_begining = "https://s3-" + str(region) + ".amazonaws.com/"
+        
     url = url_begining + bucket + "/" + newName
 
 
