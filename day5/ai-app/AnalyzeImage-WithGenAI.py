@@ -41,10 +41,7 @@ def lambda_handler(event, context):
     #Copying file back to S3
     s3.upload_file('/tmp/' + txtName, bucket, txtName)
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
+    return "OK"
 
 
 def getFullBio(celebrity):
